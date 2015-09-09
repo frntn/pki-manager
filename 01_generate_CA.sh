@@ -1,5 +1,7 @@
 #!/bin/bash -u
 
+export LC_CTYPE=C
+
 while getopts p:h opt
 do
     case "$opt" in

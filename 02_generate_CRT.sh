@@ -1,5 +1,7 @@
 #!/bin/bash -u
 
+export LC_CTYPE=C
+
 # default value should be override
 CRT_CN=${CRT_CN:-"default"}
 
