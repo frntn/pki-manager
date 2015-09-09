@@ -101,5 +101,5 @@ git init
 git add *
 git commit -m "First Commit"
 git remote add origin git@gitlab.example.com:PKIs/terminator-pki.git
-git push
+git push -u origin master
 ```
