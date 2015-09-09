@@ -34,5 +34,5 @@ chmod 444 ca.crt
 
 echo
 echo "The Certificate Authority files have been generated :"
-echo " - key :         '$(readlink -f ca.key)'"
-echo " - certificate : '$(readlink -f ca.crt)' (self-signed) "
+echo " - key :         '$PWD/ca.key'"
+echo " - certificate : '$PWD/ca.crt' (self-signed) "

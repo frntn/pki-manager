@@ -86,7 +86,7 @@ then
 $(tput bold)
 The X509 file has been generated for server identified as '${CRT_CN}'
 
-  pubcert.crt : $(readlink -f ${CRT_UID}.crt)
+  pubcert.crt : $PWD/${CRT_UID}.crt
 
 You can now install it on your server so the clients can identify your server.
 
@@ -95,7 +95,7 @@ This server certificate is verified on the client side when the browser finds th
 which means the CA certificate have to be deployed on the client in order to perform such verification (otherwise the identity will be reported as *untrusted*)
 If you want your clients to be able to actually *trust* the provided identity (that famous 'green address bar' in a browser for example), you'll need to deploy the CA certificate on the client side
 
-  pubcert_CA.crt : $(readlink -f ca.crt)
+  pubcert_CA.crt : $PWD/ca.crt
 $(tput sgr0)
 "
     elif [ "$CERTYPE" = "client" ]
@@ -109,10 +109,10 @@ $(tput bold)
 The PKCS12 file has been generated for user identified as '${CRT_CN}'
 (it is password protected, and contains the public certificate with the associated --also password protected-- private key)
 
-  container.p12       : $(readlink -f ${CRT_UID}.p12) # <-- password stored in $(readlink -f ${CRT_UID}.p12.pass)
+  container.p12       : $PWD/${CRT_UID}.p12 # <-- password stored in $PWD/${CRT_UID}.p12.pass
     |
-    |-- pubcert.crt   : $(readlink -f ${CRT_UID}.crt)
-    \`-- privkey.key   : $(readlink -f ${CRT_UID}.key) # <-- password stored in $(readlink -f ${CRT_UID}.key.pass)
+    |-- pubcert.crt   : $PWD/${CRT_UID}.crt
+    \`-- privkey.key   : $PWD/${CRT_UID}.key # <-- password stored in $PWD/${CRT_UID}.key.pass
 
 You can now install it on your browser so the servers can identify yourself.
 
@@ -134,7 +134,7 @@ else
 $(tput bold)
 The CSR file has been generated for ${CERTYPE} identified as '${CRT_CN}'
 
-  pubreq.csr : $(readlink -f ${CRT_UID}.csr)'
+  pubreq.csr : $PWD/${CRT_UID}.csr'
 
 You can now send it to your *trusted CA* (required for them to generate your signed certificate in return)
 $(tput sgr0)
