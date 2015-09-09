@@ -13,7 +13,7 @@ Manage small PKI for multiple projects with 2 bash scripts :
 
 First create the CA:
 ```bash
-./01_generate_CA.sh -p demo
+$ ./01_generate_CA.sh -p demo
 ```
 
 Then create a server certificate (x509) and/or a client certificate (p12):
@@ -24,9 +24,11 @@ $ ./02_generate_CRT.sh -p demo -t client -n "Matthieu Fronton"
 
 ## Basic Usage
 
-*RTFM*: Use `-h` to get basic help usage from each script. Also scripts output
-is fairly detailed to explained what has been generated, where is it located 
-and what to do with it.
+**RTFM**
+
+Use `-h` to get basic help usage from each script. In addition, scripts output
+is fairly detailed to explain what has been generated, where is it located 
+and *what to do with it*.
 
 ## Advanced Usage
 
@@ -50,7 +52,8 @@ subject=/C=US/L=Mountain View/O=iPhone Killer/OU=Snipers/CN=Larry Page
 ...
 ```
 
-You can also override the `subject` fields of the CA using `CA_C`, `CA_L`, `CA_O`, `CA_OU` or `CA_CN`.
+Same principle applies to CA generation : you can also override the `subject`
+fields of the CA certificate using `CA_C`, `CA_L`, `CA_O`, `CA_OU` or `CA_CN`.
 
 ## Full PKI Example 
 
