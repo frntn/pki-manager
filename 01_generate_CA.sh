@@ -24,7 +24,7 @@ umask 377
 
 # ca.key / ca.crt
 openssl req \
-    -new -x509 -days 365 \
+    -new -x509 -days ${CA_EXPIRE_DAYS:-"365"} \
     -newkey rsa:4096 -keyout ca.key -passout file:ca.pass \
     -out ca.crt -subj "/C=${CA_C:-"FR"}/L=${CA_L:-"Paris"}/O=${CA_O:-"Ekino"}/OU=${CA_OU:-"DevOps"}/CN=${CA_CN:-"$PROJECT_NAME"}"
 
