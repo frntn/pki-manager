@@ -12,11 +12,11 @@ do
            case $OPTARG in
                'client')
                    CERTYPE=$OPTARG
-		   NO_PASSWD=${NO_PASSWD:-false} # <= PrivateKey with password by default for Client certificate
+                   NO_PASSWD=${NO_PASSWD:-false} # <= PrivateKey with password by default for Client certificate
                    ;;
                'server')
                    CERTYPE=$OPTARG
-		   NO_PASSWD=${NO_PASSWD:-true} # <= passwordless PrivateKey by default for Server certificate
+                   NO_PASSWD=${NO_PASSWD:-true} # <= passwordless PrivateKey by default for Server certificate
                    ;;
                *)
                    echo >&2 "Unknown option '$1' (available values are 'client' or 'server'"
@@ -31,7 +31,7 @@ do
 Usage: $0 -p projectname -t certype [-n name]
 
   -p projectname
-        
+
         String to identify the project or client. Only used to create a
         distinct folder to separate the generated files. This _projectname_
         won't be used in the generated certificates.
@@ -77,7 +77,7 @@ openssl req \
 if ${CA_ISCUSTOM:-true}
 then
     # .crt
-    openssl x509 -req -days 365 -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt
+    openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt
 
 
     if [ "$CERTYPE" = "server" ]
