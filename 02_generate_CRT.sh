@@ -54,10 +54,21 @@ done
 : $CERTYPE
 
 # default value should be override
-: ${CRT_CN:="default"}
-: ${CRT_SUBJ:="/C=${CRT_C:-"FR"}/L=${CRT_L:-"Paris"}/O=${CRT_O:-"Ekino"}/OU=${CRT_OU:-"DevOps"}/CN=${CRT_CN}"}
+: ${CRT_SUBJ:="/C=${CRT_C:-"FR"}/L=${CRT_L:-"Paris"}/O=${CRT_O:-"Ekino"}/OU=${CRT_OU:-"DevOps"}/CN=${CRT_CN:="default"}"}
+CRT_CN="$(echo $CRT_SUBJ | sed -e 's,.*CN=\([^/]*\).*,\1,')"
 
-[ ! -d "$PROJECT_NAME" ] && echo >&2 "FATAL: The project does exist yet" && exit 1
+# CRT_SAN :
+# comma separated 'key:value' string where key can be 'DNS' or 'IP'
+# example : "DNS:logs.example.com,DNS:metrics.example.com,IP:192.168.0.1,IP:10.0.0.50"
+EXTFILE_CONTENT=""
+if [ ! -z ${CRT_SAN:-""} ]
+then
+    EXTFILE_CONTENT="\\nsubjectAltName = ${CRT_SAN}"
+fi
+EXTFILE_CONTENT="extendedKeyUsage = ${CERTYPE}Auth ${EXTFILE_CONTENT}"
+
+
+[ ! -d "$PROJECT_NAME" ] && echo >&2 "FATAL: project '$PROJECT_NAME' doesn't exist yet" && exit 1
 cd "$PROJECT_NAME"
 
 CRT_UID="${CERTYPE}Certificate_$( date +%Y%m%d_%H%M%S )_$( echo ${CRT_CN} | tr -dc A-Za-z0-9 )"
@@ -80,7 +91,7 @@ then
     if [ "$CERTYPE" = "server" ]
     then
         # .crt
-        openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -sha256 -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt -extfile <(echo "extendedKeyUsage = serverAuth")
+        openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -sha256 -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt -extfile <(echo -e "$EXTFILE_CONTENT")
         echo "
 $(tput bold)
 The X509 file has been generated for server identified as '${CRT_CN}'
@@ -100,7 +111,7 @@ $(tput sgr0)
     elif [ "$CERTYPE" = "client" ]
     then
         # .crt
-        openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -sha256 -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt -extfile <(echo "extendedKeyUsage = clientAuth")
+        openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -sha256 -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt -extfile <(echo -e "$EXTFILE_CONTENT")
 
         # client.p12 (or .pfx)
         < /dev/urandom tr -dc A-Za-z0-9 | head -c15 > ${CRT_UID}.p12.pass
