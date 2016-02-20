@@ -2,9 +2,6 @@
 
 export LC_CTYPE=C
 
-# default value should be override
-CRT_CN=${CRT_CN:-"default"}
-
 while getopts t:n:p:h opt
 do
     case "$opt" in
@@ -56,6 +53,10 @@ done
 : $PROJECT_NAME
 : $CERTYPE
 
+# default value should be override
+: ${CRT_CN:="default"}
+: ${CRT_SUBJ:="/C=${CRT_C:-"FR"}/L=${CRT_L:-"Paris"}/O=${CRT_O:-"Ekino"}/OU=${CRT_OU:-"DevOps"}/CN=${CRT_CN}"}
+
 [ ! -d "$PROJECT_NAME" ] && echo >&2 "FATAL: The project does exist yet" && exit 1
 cd "$PROJECT_NAME"
 
@@ -69,7 +70,7 @@ umask 377
 openssl req \
     -new \
     -newkey rsa:4096 -keyout ${CRT_UID}.key $PASSWD_STRING \
-    -out ${CRT_UID}.csr -subj "/C=${CRT_C:-"FR"}/L=${CRT_L:-"Paris"}/O=${CRT_O:-"Ekino"}/OU=${CRT_OU:-"DevOps"}/CN=${CRT_CN}"
+    -out ${CRT_UID}.csr -subj "$CRT_SUBJ"
 
 # What to do here :
 #  - TRUSTED CA => stop here, then send the generated .csr to your trusted CA
