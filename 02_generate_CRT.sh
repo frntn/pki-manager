@@ -76,12 +76,10 @@ openssl req \
 #  - CUSTOM CA  => continue and generate the .crt/.p12 file(s)
 if ${CA_ISCUSTOM:-true}
 then
-    # .crt
-    openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt
-
-
     if [ "$CERTYPE" = "server" ]
     then
+        # .crt
+        openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -sha256 -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt -extfile <(echo "extendedKeyUsage = serverAuth")
         echo "
 $(tput bold)
 The X509 file has been generated for server identified as '${CRT_CN}'
@@ -100,6 +98,9 @@ $(tput sgr0)
 "
     elif [ "$CERTYPE" = "client" ]
     then
+        # .crt
+        openssl x509 -req -days ${CRT_EXPIRE_DAYS:-"365"} -sha256 -in ${CRT_UID}.csr -passin file:ca.pass -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial -out ${CRT_UID}.crt -extfile <(echo "extendedKeyUsage = clientAuth")
+
         # client.p12 (or .pfx)
         < /dev/urandom tr -dc A-Za-z0-9 | head -c15 > ${CRT_UID}.p12.pass
         openssl pkcs12 -export -passin file:${CRT_UID}.key.pass -inkey ${CRT_UID}.key -in ${CRT_UID}.crt -name "${CRT_CN}" -passout file:${CRT_UID}.p12.pass -out ${CRT_UID}.p12
