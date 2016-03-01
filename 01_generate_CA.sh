@@ -1,5 +1,7 @@
 #!/bin/bash -u
 
+{
+
 export LC_CTYPE=C
 
 while getopts p:h opt
@@ -36,3 +38,5 @@ echo
 echo "The Certificate Authority files have been generated :"
 echo " - key :         '$PWD/ca.key'"
 echo " - certificate : '$PWD/ca.crt' (self-signed) "
+
+}

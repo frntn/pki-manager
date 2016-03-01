@@ -1,5 +1,7 @@
 #!/bin/bash -u
 
+{
+
 export LC_CTYPE=C
 
 while getopts t:n:p:h opt
@@ -157,3 +159,5 @@ fi
 umask 022
 chmod 600 ca.srl
 chmod 444 ${CRT_UID}.csr ${CRT_UID}.crt
+
+}
