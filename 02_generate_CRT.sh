@@ -1,4 +1,6 @@
-#!/bin/bash -u
+#!/bin/bash
+
+set -u
 
 {
 
